@@ -1,22 +1,31 @@
 package com.testingshastra.base;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 import com.testingshastra.exceptions.InvalidBrowserNameException;
+import com.testingshastra.utils.App;
 
 public abstract class Keyword {
 	public static RemoteWebDriver driver = null;
 	private static final Logger LOG = Logger.getLogger(Keyword.class);
 
-	public static void openBrowser(String browserName) {
-		if (browserName.equalsIgnoreCase("Chrome")) {
+	public static RemoteWebDriver openBrowser(String browserName) throws MalformedURLException {
+		boolean isOnGrid = App.isOnGrid();
+		if (isOnGrid) {
+			FirefoxOptions option = new FirefoxOptions();
+			driver = new RemoteWebDriver(new URL("http://192.168.1.33:4444"),option);
+		} else if (browserName.equalsIgnoreCase("Chrome")) {
 			driver = new ChromeDriver();
 		} else if (browserName.equalsIgnoreCase("Firefox")) {
 			driver = new FirefoxDriver();
@@ -26,11 +35,12 @@ public abstract class Keyword {
 			throw new InvalidBrowserNameException(browserName);
 		}
 		driver.manage().window().maximize();
+		return driver;
 	}
 
 	public static void launchUrl(String url) {
 		driver.get(url);
-		LOG.info("Launched url: "+url);
+		LOG.info("Launched url: " + url);
 	}
 
 	public static void hoverOn(WebElement element) {
@@ -48,31 +58,31 @@ public abstract class Keyword {
 	public static void enterText(String locator, String textToEnter) {
 		getWebElement(locator).sendKeys(textToEnter);
 	}
-	
+
 	public static By getBy(String locator) {
 		By by = null;
 		String locatorType = locator.split("##")[0];
 		String locatorValue = locator.split("##")[1];
 		if (locatorType.equalsIgnoreCase("id")) {
 			by = By.id(locatorValue);
-		} else if(locatorType.equalsIgnoreCase("name")){
+		} else if (locatorType.equalsIgnoreCase("name")) {
 			by = By.name(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("className")){
+		} else if (locatorType.equalsIgnoreCase("className")) {
 			by = By.className(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("tagName")){
+		} else if (locatorType.equalsIgnoreCase("tagName")) {
 			by = By.tagName(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("linkText")){
+		} else if (locatorType.equalsIgnoreCase("linkText")) {
 			by = By.linkText(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("partialLinkText")){
+		} else if (locatorType.equalsIgnoreCase("partialLinkText")) {
 			by = By.partialLinkText(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("xpath")){
+		} else if (locatorType.equalsIgnoreCase("xpath")) {
 			by = By.xpath(locatorValue);
-		}else if(locatorType.equalsIgnoreCase("css")){
+		} else if (locatorType.equalsIgnoreCase("css")) {
 			by = By.cssSelector(locatorValue);
-		}else {
-			
+		} else {
+
 		}
-		
+
 		return by;
 	}
 
@@ -99,11 +109,12 @@ public abstract class Keyword {
 		}
 		return element;
 	}
+
 	public static void clickOn(String locator) {
 		getWebElement(locator).click();
 
 	}
-	
+
 	public static String getTextOf(String locator) {
 		String value = null;
 		value = getWebElement(locator).getText();

@@ -10,7 +10,6 @@ import com.testingshastra.utils.App;
  * This class is no longer in use. Instead you can use {@code Hooks}
  * class as we are writing test cases in Cucumber.
  */
-@Deprecated
 public class TestBase {
 
 	@BeforeMethod

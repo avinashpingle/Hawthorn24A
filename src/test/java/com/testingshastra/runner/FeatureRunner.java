@@ -15,7 +15,7 @@ plugin = {
 public class FeatureRunner extends AbstractTestNGCucumberTests{
 
 	
-	@DataProvider(parallel = false)
+	@DataProvider(parallel = true)
 	@Override
 	public Object[][] scenarios() {
 		

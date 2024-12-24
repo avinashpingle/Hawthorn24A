@@ -12,4 +12,8 @@ public class App {
 	public static String getAppUrl(String env) {
 		return prop.getProperty(filePath, env+"_app_url");
 	}
+	
+	public static boolean isOnGrid() {
+		return Boolean.parseBoolean(prop.getProperty(filePath, "isOnGrid"));
+	}
 }
